@@ -2,7 +2,7 @@ const Header = () => {
     return (
         <>
             <h1 style={headingStyle}> Echo-Vids</h1>
-            <h2 style={subHeadingStyle}> A YouTube Video Recommender for the Sounds in Life</h2>
+            <h2 style={subHeadingStyle}> An Audio Recommender Platform for the Sounds in Life</h2>
         </>
     )
 }

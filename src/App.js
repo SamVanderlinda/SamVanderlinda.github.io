@@ -33,6 +33,7 @@ import blobToBuffer from 'blob-to-buffer'
 // import ribbon from './ribbon.png'
 
 let vids = [['ArsKCV3rkc4', 0], ['4HSkwF586ro', 1], ['QM4qxOYDwHo', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0]];
+const API_KEY = "AIzaSyBqaWB1aHNyOlzNZ1o1VlQSzx1434urZfA";
 
 export default class App extends Component {
   constructor(props) {
@@ -75,7 +76,7 @@ export default class App extends Component {
             />
 
             <p>
-              Click and hold to start recording.
+              Click and hold to start recording for at least 5 seconds.
             </p>
 
             {url && (
@@ -111,7 +112,7 @@ export default class App extends Component {
         window.URL.revokeObjectURL(this.state.url)
       }
 
-      await axios.post('http://1f47-104-199-122-141.ngrok.io/recommend', formData, {
+      await axios.post('http://f6aa-35-233-154-26.ngrok.io/recommend', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -145,19 +146,19 @@ export default class App extends Component {
 
 
   video_insert = () => {
+
+    // https://www.googleapis.com/youtube/v3/videos?id=VIDEOID&part=status&key=APIKEY
+    // let unavailable = [];
+    // for (var i = 0; i < 10; i++) {
+    //   var status = fetch(`https://www.googleapis.com/youtube/v3/videos?id=${this.state.vids[i][0]}&part=status&key=${API_KEY}`);
+    //   console.log(status);
+    // }
     return (
       <>
       <br/>
-        <VideoEmbed videoID={this.state.vids[0][0]} startTime={this.state.vids[0][1]} />
-        <VideoEmbed videoID={this.state.vids[1][0]} startTime={this.state.vids[1][1]} />
-        <VideoEmbed videoID={this.state.vids[2][0]} startTime={this.state.vids[2][1]} />
-        <VideoEmbed videoID={this.state.vids[3][0]} startTime={this.state.vids[3][1]} />
-        <VideoEmbed videoID={this.state.vids[4][0]} startTime={this.state.vids[4][1]} />
-        <VideoEmbed videoID={this.state.vids[5][0]} startTime={this.state.vids[5][1]} />
-        <VideoEmbed videoID={this.state.vids[6][0]} startTime={this.state.vids[6][1]} />
-        <VideoEmbed videoID={this.state.vids[7][0]} startTime={this.state.vids[7][1]} />
-        <VideoEmbed videoID={this.state.vids[8][0]} startTime={this.state.vids[8][1]} />
-        <VideoEmbed videoID={this.state.vids[9][0]} startTime={this.state.vids[9][1]} />
+        {this.state.vids.map(function(vid, index){
+                    return <VideoEmbed videoID={vid[0]} startTime={vid[1]}/>;
+                  })}
           </>
     );
   } 
