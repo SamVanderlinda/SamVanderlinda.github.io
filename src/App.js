@@ -25,6 +25,7 @@ import React, { Component } from 'react'
 import axios from "axios"
 import Recorder from 'react-mp3-recorder'
 import ReactAudioPlayer from 'react-audio-player'
+import {saveAs} from 'file-saver';
 
 import blobToBuffer from 'blob-to-buffer'
 // import ribbon from './ribbon.png'
@@ -104,34 +105,31 @@ export default class App extends Component {
   //   const body = await response.json();
   // }
 
-  _onRecordingComplete = (blob) => {
-    blobToBuffer(blob, (err, buffer) => {
+  _onRecordingComplete = async (blob) => {
+    blobToBuffer(blob, async (err, buffer) => {
       if (err) {
         console.error(err)
         return
       }
-
-      console.log('recording', blob)
+      var mp3file = new File([blob], "lolrecording.mp3");
+      var formData = new FormData();
+      formData.append("rawAudioData", mp3file)
 
       if (this.state.url) {
         window.URL.revokeObjectURL(this.state.url)
       }
 
-      // const config = { responseType: 'blob' };
-
-      // const blobFile = new File([this.state.blob], 'blob_file');
-      // var text = await this.state.blob.text();
-      // console.log("request firesd ", text);
-      // axios.post('http://483f-34-74-207-163.ngrok.io/recommend', {
-      //   rawAudioData: text,
-      //   random: "poopoo"
-      // })
-      // .then(function (response) {
-      //   console.log(response);
-      // })
-      // .catch(function (error) {
-      //   console.log(error);
-      // });
+      axios.post('http://36f0-34-74-207-163.ngrok.io/recommend', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
 
       this.setState({
         url: window.URL.createObjectURL(blob),
@@ -150,16 +148,4 @@ export default class App extends Component {
     this.setState({ url: null, blob: '' })
   }
 
-  componentWillUpdate() {
-      axios.post('http://483f-34-74-207-163.ngrok.io/recommend', {
-        rawAudioData: this.state.url,
-        random: "poopoo"
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
 }
