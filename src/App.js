@@ -26,17 +26,26 @@ import axios from "axios"
 import Recorder from 'react-mp3-recorder'
 import ReactAudioPlayer from 'react-audio-player'
 import {saveAs} from 'file-saver';
+import VideoEmbed from './components/VideoEmbed';
+import Header from "./components/Header";
 
 import blobToBuffer from 'blob-to-buffer'
 // import ribbon from './ribbon.png'
 
+let vids = [['ArsKCV3rkc4', 0], ['4HSkwF586ro', 1], ['QM4qxOYDwHo', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0]];
+
 export default class App extends Component {
-  state = {
-    url: '',
-    blob: ''
+  constructor(props) {
+    super(props);
+    this.state = {
+      url: '',
+      blob: '',
+      vids: [['ArsKCV3rkc4', 0], ['4HSkwF586ro', 1], ['QM4qxOYDwHo', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0], ['ArsKCV3rkc4', 0]]
+    };
   }
 
   render () {
+
     const {
       url,
       blob
@@ -44,18 +53,7 @@ export default class App extends Component {
 
     return (
       <div>
-        {/* <a href='https://github.com/transitive-bullshit/react-mp3-recorder'>
-          <img
-            src={ribbon}
-            alt='Fork me on GitHub'
-            style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              border: 0
-            }}
-          />
-        </a> */}
+        <Header />
 
         <div
           style={{
@@ -89,6 +87,7 @@ export default class App extends Component {
                     minWidth: '500px'
                   }}
                 />
+                {this.video_insert()}
               </div>
             )}
           </div>
@@ -98,20 +97,13 @@ export default class App extends Component {
     )
   }
 
-  // get_video = () => {
-  //   const YOUR_API_KEY = "AIzaSyBqaWB1aHNyOlzNZ1o1VlQSzx1434urZfA";
-  //   const url = "https://www.googleapis.com/youtube/v3/videos?id=7lCDEYXw3mM&key=${YOUR_API_KEY}&part=snippet,contentDetails,statistics,status";
-  //   let response = await fetch(url);
-  //   const body = await response.json();
-  // }
-
   _onRecordingComplete = async (blob) => {
     blobToBuffer(blob, async (err, buffer) => {
       if (err) {
         console.error(err)
         return
       }
-      var mp3file = new File([blob], "lolrecording.mp3");
+      var mp3file = new File([blob], "recording.mp3");
       var formData = new FormData();
       formData.append("rawAudioData", mp3file)
 
@@ -119,22 +111,25 @@ export default class App extends Component {
         window.URL.revokeObjectURL(this.state.url)
       }
 
-      axios.post('http://36f0-34-74-207-163.ngrok.io/recommend', formData, {
+      await axios.post('http://1f47-104-199-122-141.ngrok.io/recommend', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       })
       .then(function (response) {
         console.log(response);
+        vids = response.data.videos;
       })
       .catch(function (error) {
         console.log(error);
       });
 
+
       this.setState({
         url: window.URL.createObjectURL(blob),
-        blob: blob
-      })
+        blob: blob,
+        vids: vids,
+      });
     })
   }
 
@@ -145,7 +140,26 @@ export default class App extends Component {
       window.URL.revokeObjectURL(this.state.url)
     }
 
-    this.setState({ url: null, blob: '' })
-  }
+    this.setState({ url: null, blob: '' , vids: [['ArsKCV3rkc4', 0], ['4HSkwF586ro', 1], ['QM4qxOYDwHo', 0]]})
+  };
+
+
+  video_insert = () => {
+    return (
+      <>
+      <br/>
+        <VideoEmbed videoID={this.state.vids[0][0]} startTime={this.state.vids[0][1]} />
+        <VideoEmbed videoID={this.state.vids[1][0]} startTime={this.state.vids[1][1]} />
+        <VideoEmbed videoID={this.state.vids[2][0]} startTime={this.state.vids[2][1]} />
+        <VideoEmbed videoID={this.state.vids[3][0]} startTime={this.state.vids[3][1]} />
+        <VideoEmbed videoID={this.state.vids[4][0]} startTime={this.state.vids[4][1]} />
+        <VideoEmbed videoID={this.state.vids[5][0]} startTime={this.state.vids[5][1]} />
+        <VideoEmbed videoID={this.state.vids[6][0]} startTime={this.state.vids[6][1]} />
+        <VideoEmbed videoID={this.state.vids[7][0]} startTime={this.state.vids[7][1]} />
+        <VideoEmbed videoID={this.state.vids[8][0]} startTime={this.state.vids[8][1]} />
+        <VideoEmbed videoID={this.state.vids[9][0]} startTime={this.state.vids[9][1]} />
+          </>
+    );
+  } 
 
 }
